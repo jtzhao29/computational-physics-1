@@ -26,28 +26,49 @@ def logistic_map(x0, mu, n_iter)->np.ndarray:
         x[i+1] = f_1(mu, x[i])
     return x
 
+# def plot_logistic_map(mu_values, x0, n_iter):
+#     """
+#     绘制不同 mu 值下的 Logistic 映射结果。
+
+#     Args:
+#         mu_values: 一个包含多个 mu 值的列表或 NumPy 数组。
+#         x0: 初值。
+#         n_iter: 迭代次数。
+#     """
+#     plt.figure(figsize=(12, 6))
+#     for mu in mu_values:
+#         print
+#         x = logistic_map(x0, mu, n_iter)
+#         plt.plot(x, label=f"μ = {mu}")
+
+#     plt.xlabel("Iteration")
+#     plt.ylabel("x_n")
+#     plt.title("Logistic Map")
+#     plt.legend()
+#     plt.grid(True)
+#     plt.show()
+
 def plot_logistic_map(mu_values, x0, n_iter):
     """
     绘制不同 mu 值下的 Logistic 映射结果。
-
-    Args:
-        mu_values: 一个包含多个 mu 值的列表或 NumPy 数组。
-        x0: 初值。
-        n_iter: 迭代次数。
+    将不同mu值的结果画到不同的子图中
     """
-    plt.figure(figsize=(12, 6))
-    for mu in mu_values:
-        print
+    num_plots = len(mu_values)
+    fig, axes = plt.subplots(num_plots, 1, figsize=(12, 6 * num_plots)) 
+
+    print("debug")
+
+    for i, mu in enumerate(mu_values):
         x = logistic_map(x0, mu, n_iter)
-        plt.plot(x, label=f"μ = {mu}")
-
-    plt.xlabel("Iteration")
-    plt.ylabel("x_n")
-    plt.title("Logistic Map")
-    plt.legend()
-    plt.grid(True)
+        axes[i].plot(x, label=f"μ = {mu}")
+        axes[i].set_xlabel("Iteration")
+        axes[i].set_ylabel("x_n")
+        axes[i].grid(True)
+        axes[i].legend()
+        
+    
+    plt.tight_layout()  # Adjust subplot parameters for a tight layout.
     plt.show()
-
 
 mu_values = [0.01,0.5,1,1.5,1.99] 
 x0 = 0.5
