@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 def random_block(L,gridll):
     """
@@ -100,34 +101,67 @@ def plot_score_distribution(score_list, L):
     绘制得分的频率分布直方图，并进行归一化
     """
     plt.figure(figsize=(10, 6))  
-    n, bins, patches = plt.hist(score_list, bins=100, 
+    n, bins, patches = plt.hist(score_list, bins=150, 
                                 density=True, facecolor='g', alpha=0.75)  
    
 
-    plt.xlabel('Score')
-    plt.ylabel('Frequency') 
-    plt.xlim(0) 
-    plt.title(f'Score Distribution (L={L})') 
+    plt.xlabel('Score',fontsize=18)
+    plt.ylabel('Frequency', fontsize=18) 
+    plt.xlim(0,max(score_list)) 
+    plt.title(f'Score Distribution (L={L})',fontsize=25) 
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
     plt.grid(True)  
 
     plt.show()  
+
+def plot_score_distribution_and_save(score_list, L):
+    """
+    绘制得分的频率分布直方图，并进行归一化
+    """
+    plt.figure(figsize=(10, 6))  
+    n, bins, patches = plt.hist(score_list, bins=150, 
+                                density=True, facecolor='g', alpha=0.75)  
+   
+    
+    plt.xlabel('Score',fontsize=18)
+    plt.ylabel('Frequency', fontsize=18) 
+    plt.xlim(0,max(score_list)) 
+    plt.title(f'Score Distribution (L={L})',fontsize=25) 
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.grid(True)  
+    save_path = f"./figure/B_2_{L}.png"
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    plt.savefig(save_path) 
+    plt.show() 
+   
 
 def main_1(average_density):
     """
     这个函数画出平均密度随时间的变化图
     """
     plt.plot(average_density)
-    plt.xlabel("Time")
-    plt.ylabel("Average Density")
-    plt.title(f"Average Density (L={L})")
+    plt.xlabel("Time",fontsize=18)
+    plt.ylabel("Average Density",fontsize=18)
+    plt.title(f"Average Density (L={L})",fontsize=18)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
     plt.show()
 
 if __name__ == '__main__':
-    L = 20
+    L = 32
     total_time = 8000
     gridll,score_list,average_density = main(total_time,L)
-    main_1(average_density)
+    # main_1(average_density)
     plot_score_distribution(score_list, L)
+    L_list = [5,10,15,20,25,30,35,40]
+    print(f"L={L},the maximum score is:",max(score_list))
+    for L in L_list:
+        total_time = 8000
+        gridll,score_list,average_density = main(total_time,L)
+        print(f"L={L},the maximum score is:",max(score_list))
+        plot_score_distribution_and_save(score_list, L)
 
     
 

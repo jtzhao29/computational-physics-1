@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def f_1(mu,x):
+def f_2(mu,x):
     """
-    定义第一问中的迭代方程
+    定义第二问中的迭代方程
     """
-    return np.cos(x)-mu*x**2
+    return np.cos(x) - mu*x**2
 
 def logistic_map(x0, mu, n_iter)->np.ndarray:  
     """
@@ -23,7 +23,7 @@ def logistic_map(x0, mu, n_iter)->np.ndarray:
     x = np.zeros(n_iter)
     x[0] = x0
     for i in range(n_iter - 1):
-        x[i+1] = f_1(mu, x[i])
+        x[i+1] = f_2(mu, x[i])
     return x
 
 # def plot_logistic_map(mu_values, x0, n_iter):
@@ -61,20 +61,25 @@ def plot_logistic_map(mu_values, x0, n_iter):
     for i, mu in enumerate(mu_values):
         x = logistic_map(x0, mu, n_iter)
         axes[i].plot(x, label=f"μ = {mu}")
-        axes[i].set_xlabel("Iteration")
-        axes[i].set_ylabel("x_n")
+        axes[i].xaxis.set_tick_params(labelsize=18)
+        axes[i].yaxis.set_tick_params(labelsize=18)
+        axes[i].set_xlabel("Iteration",fontsize=18)
+        axes[i].set_ylabel("x_n",fontsize=18)
+        
         axes[i].grid(True)
         axes[i].legend()
         
-    
+    plt.title(f"$x_n$ vs Iteration for func 2 for different $\mu$ values, $x_0$ = {x0}", 
+              fontsize=19, y=10.5)
     plt.tight_layout()  # Adjust subplot parameters for a tight layout.
     plt.show()
 
-mu_values = [0.01,0.5,1,1.5,1.99] 
-x0 = 0.5
+mu_values_1 = [0.01,0.3,0.6,1,1.3,1.6,1.99] 
+mu_values_2 = [0.01,0.5,1,1.5,1.99]
+x0 = -0.99
 n_iter = 50
 
-plot_logistic_map(mu_values, x0, n_iter)
+plot_logistic_map(mu_values_1, x0, n_iter)
 
 
 def plot_initial_condition_sensitivity(mu, x0_1, x0_2, n_iter):
@@ -88,8 +93,8 @@ def plot_initial_condition_sensitivity(mu, x0_1, x0_2, n_iter):
     plt.plot(x1, label=f"x0 = {x0_1}")
     plt.plot(x2, label=f"x0 = {x0_2}")
 
-    plt.xlabel("Iteration")
-    plt.ylabel("x_n")
+    plt.xlabel("Iteration",fontsize=18)
+    plt.ylabel("x_n",fontsize=18)
     plt.title(f"Logistic Map - Initial Condition Sensitivity (μ = {mu})")
     plt.legend()
     plt.grid(True)
@@ -102,3 +107,4 @@ x0_2 = 0.2001
 n_iter = 100
 
 # plot_initial_condition_sensitivity(mu, x0_1, x0_2, n_iter)
+

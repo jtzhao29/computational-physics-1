@@ -69,12 +69,13 @@ def plot_logistic_map(mu_values, x0, n_iter):
         axes[i].legend()
         
     plt.title(f"$x_n$ vs Iteration for func 1 for different $\mu$ values, $x_0$ = {x0}", 
-              fontsize=19, y=6.51)
+              fontsize=19, y=10.5)
     plt.tight_layout()  # Adjust subplot parameters for a tight layout.
     plt.show()
 
-mu_values = [0.01,0.5,1,1.5,1.99] 
-x0 = -0.5
+mu_values = [0.01,0.3,0.6,1,1.3,1.6,1.99] 
+mu_values = [0.01,0.5,1,1.5,1.99]
+x0 = 0.99
 n_iter = 50
 
 plot_logistic_map(mu_values, x0, n_iter)
