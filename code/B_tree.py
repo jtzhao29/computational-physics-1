@@ -123,7 +123,7 @@ def main_1(average_density):
     plt.show()
 
 if __name__ == '__main__':
-    L = 32
+    L = 20
     total_time = 8000
     gridll,score_list,average_density = main(total_time,L)
     main_1(average_density)

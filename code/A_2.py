@@ -5,7 +5,7 @@ def f_1(mu,x):
     """
     定义第一问中的迭代方程
     """
-    return 1-mu*x**2
+    return np.cos(x)-mu*x**2
 
 def logistic_map(x0, mu, n_iter)->np.ndarray:  
     """
