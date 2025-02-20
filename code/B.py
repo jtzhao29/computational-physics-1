@@ -59,6 +59,7 @@ def main(total_time,L) :
             y = exist_4_or_more(L,gridll)[2]
             delete_block(L,gridll,x,y)
             s += 1
+            print(s)
         score_list.append(s)
         t += 1
         average_density.append(np.sum(gridll)/(L*L))

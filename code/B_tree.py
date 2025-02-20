@@ -53,19 +53,20 @@ def exist_4_or_more(L,gridll):
 
 
 
-def find_4_or_more(L,gridll,x,y):
-    if gridll[x][y] < 4:
+def find_4_or_more(L,gridll,x,y,s):
+    if gridll[x][y] < 4:    
         return 
     if gridll[x][y] >=4 :
         delete_block(L,gridll,x,y)
+        s[0] += 1
         if x >=1:
-            find_4_or_more(L,gridll,x-1,y)
+            find_4_or_more(L,gridll,x-1,y,s)
         if x < L-1: 
-            find_4_or_more(L,gridll,x+1,y)
+            find_4_or_more(L,gridll,x+1,y,s)
         if y >=1:
-            find_4_or_more(L,gridll,x,y-1)
+            find_4_or_more(L,gridll,x,y-1,s)
         if y < L-1:
-            find_4_or_more(L,gridll,x,y+1)
+            find_4_or_more(L,gridll,x,y+1,s)
             
 
 
@@ -83,13 +84,10 @@ def main(total_time,L) :
     average_density = []    
     while t < total_time:
         gridll,x,y = random_block_xy(L,gridll)
-        s = 0
-        while exist_4_or_more(L,gridll)[0]:
-            x = exist_4_or_more(L,gridll)[1]
-            y = exist_4_or_more(L,gridll)[2]
-            delete_block(L,gridll,x,y)
-            s += 1
-        score_list.append(s)
+        s = [0]
+        find_4_or_more(L,gridll,x,y,s)
+        
+        score_list.append(s[0])
         t += 1
         average_density.append(np.sum(gridll)/(L*L))
     return gridll,score_list,average_density
@@ -114,7 +112,7 @@ def plot_score_distribution(score_list, L):
 
     plt.show()  
 
-def main_1(average_densityL):
+def main_1(average_density):
     """
     这个函数画出平均密度随时间的变化图
     """
