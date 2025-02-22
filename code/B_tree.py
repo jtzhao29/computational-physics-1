@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 from scipy.stats import expon
 from scipy.stats import kstest
+from scipy import stats
 
 def random_block(L,gridll):
     """
@@ -123,22 +124,28 @@ def plot_score_distribution_and_save(score_list, L):
     """
     plt.figure(figsize=(10, 6))  
     wight_list = np.ones_like(score_list)/float(len(score_list))
-    n, bins, patches = plt.hist(score_list, bins=1200, 
+    n, bins, patches = plt.hist(score_list, bins=12000, 
                                 density=False, weights=wight_list, facecolor='g', alpha=0.75)  
    
     
     plt.xlabel('Score',fontsize=18)
     plt.ylabel('Frequency', fontsize=18) 
-    plt.xlim(0,40) 
-    plt.ylim(0,0.8)
+    # plt.xlim(0,40) 
+    # plt.ylim(0,0.8)
     plt.title(f'Score Distribution (L={L})',fontsize=25) 
     plt.xticks(fontsize=18)
     plt.yticks(fontsize=18)
     plt.grid(True)  
-    save_path = f"./figure/B_2_{L}.png"
+    save_path = f"./figure/B_2_{L}_new.png"
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.savefig(save_path) 
     plt.show() 
+
+#     save_path = f"./figure/B_for_n_L.png"
+#     os.makedirs(os.path.dirname(save_path), exist_ok=True)
+#     plt.savefig(save_path)
+#     plt.show()
+
    
 # def plot_score_distribution_for_n_L(L_list, total_time):
 #     score_list_for_L = {}
@@ -173,16 +180,121 @@ def main_1(average_density):
     plt.yticks(fontsize=18)
     plt.show()
 
+def average_density_fit(average_density):
+    """
+    这个函数拟合平均密度随时间的变化曲线
+    """
+    x = np.arange(2000)
+    y = [average_density[i] for i in x]
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+    fit_line = slope*x + intercept
+    print(f"Slope: {slope:.6f}, Intercept: {intercept:.2f}, R-squared: {r_value**2:.2f}")
+    plt.plot(average_density, color='blue', label='Data Points')
+    plt.plot(x, fit_line, color='red', label=f'Fit Line: y={slope:.6f}x+{intercept:.2f}')
+    plt.xlabel("Time",fontsize=18)
+    plt.ylabel("Average Density",fontsize=18)
+    plt.title(f"Average Density (L={L})",fontsize=25)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.legend(fontsize=18)
+    plt.grid(True, which="both", ls="--")
 
-# # 生成图像
+
+def plot_list_milvus_fit(score_list, L,len):
+    """
+    绘制得分的频率分布直方图，并进行归一化
+    """
+    scores = np.arange(1,len)
+    frequencies = np.array([score_list.count(i) for i in range(1,len)])
+
+    log_scores = np.log(scores+1)
+    log_frequencies = np.log(frequencies)
+
+    slope, intercept, r_value, p_value, std_err = stats.linregress(log_scores, log_frequencies)
+
+    fit_line = slope*log_scores + intercept
+     # 绘制log-log坐标下的直方图和拟合直线
+    plt.figure(figsize=(10, 6))
+    plt.scatter(log_scores, log_frequencies, label='Data Points')
+    plt.plot(log_scores, fit_line, color='red', label=f'Fit Line: y={slope:.2f}x+{intercept:.2f}')
+    
+    plt.xlabel("Log(Score+1)", fontsize=18)
+    plt.ylabel("Log(Frequency)", fontsize=18)
+    plt.title(f"Log-Log Score Distribution (L={L})", fontsize=18)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.legend(fontsize=18)
+    plt.grid(True, which="both", ls="--")
+    
+    save_path = f"./figure/B_{L}_log_fit.png"
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    plt.savefig(save_path)
+    plt.show()
+
+def plot_list_milvus_polyfit(score_list, L, len,degree=1):
+    """
+    绘制得分的频率分布直方图，并进行归一化，同时进行多项式拟合并绘制拟合曲线
+    """
+    scores = np.arange(len)
+    frequencies = np.array([score_list.count(i) for i in range(len)])
+
+    coefficients = np.polyfit(scores, frequencies)
+    polynomial = np.poly1d(coefficients)
+
+    fitted_values = polynomial(scores)
+
+    fig, ax = plt.subplots()
+
+    ax.scatter(scores, frequencies, color='blue', label='Original Data')
+
+    ax.plot(scores, fitted_values, color='red', label=f'Fitted Polynomial ')
+
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+
+    ax.set_xlabel("Score", fontsize=18)
+    ax.set_ylabel("Frequency", fontsize=18)
+    ax.set_title(f"Score Distribution and Fitting (L={L})", fontsize=18)
+
+    ax.xaxis.set_tick_params(labelsize=18)
+    ax.yaxis.set_tick_params(labelsize=18)
+
+    ax.legend(fontsize=18)
+
+    plt.show()
+
+
+def plot_list_milvus(score_list, L,len):
+    # 使用对数刻度绘制图形
+    # fenbu = np.arange(len)
+    fenbu = np.array([score_list.count(i) for i in range(len)])
+
+    ax,fig = plt.subplots(figsize=(10, 6))
+    ax.plot(fenbu)
+    plt.xlabel("Score",fontsize=18)
+    plt.ylabel("Frequency",fontsize=18)
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    plt.title(f"Score Distribution (L={L})",fontsize=25)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.grid(True)
+    save_path = f"./figure/B_{L}_log.png"
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    plt.savefig(save_path)
+    plt.show()
+
+
+# 生成图像
 # if __name__ == '__main__':
-#     # L = 30
+#     # L = 32
 #     # total_time = 16000
 #     # gridll,score_list,average_density = main(total_time,L)
-#     # main_1(average_density)
+#     # average_density_fit(average_density)
 #     # # xmax = {5:20,10:35,15:70,20:100,25:200,30:200,32:200,35:250,40:250}
 #     # plot_score_distribution(score_list, L)
 #     L_list = [30,35,40,45,32]
+#     L_list = [32]
 #     # L_list = [32]
 #     # print(f"L={L},the maximum score is:",max(score_list))
 #     for L in L_list:
@@ -199,11 +311,10 @@ def main_1(average_density):
 
 # 验证指数分布
 if __name__ == '__main__':
-    L = 32
+    L_list= [30,35,40,45,32]
     total_time = 16000
-    gridll,score_list,average_density = main(total_time,L)
-    # 验证指数分布
-    data = np.array(score_list)
-    df = 4
-    result = kstest(data, 'chi2',args = (df,))
-    print(result)
+    for L in L_list:
+        gridll,score_list,average_density = main(total_time,L)
+        len =50
+        plot_list_milvus_fit(score_list, L,len)
+        # plot_list_milvus_polyfit(score_list, L,len,degree=3)
